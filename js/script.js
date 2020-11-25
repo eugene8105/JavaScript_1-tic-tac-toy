@@ -1,8 +1,8 @@
 
-var hPlayer = [0, 0, 0, 0, 0];
+var hPlayer = [];
 var hCount = 0;
 
-var cPlayer = [0, 0, 0, 0, 0];
+var cPlayer = [];
 var cCount = 0;
 
 var win;
@@ -49,8 +49,11 @@ $(document).ready(function () {
             hPlayer[hCount] = assignHuman(chosenRow, chosenCol);
 
             hCount++;
-            checkWiner();
-            if (hCount !== 5) {
+            if (checkWiner(hPlayer)) {
+                console.log("You WON!");
+                resetGame();
+            }
+            if ((hCount !== 5) && (checkWiner(hPlayer) === false)) {
                 computerPlayerTurn();
             }
         }
@@ -98,39 +101,54 @@ $(document).ready(function () {
 
         cCount++;
         console.log(`Assigned Computer choice - ${randomSquareNum}.`);
-
+        // checking computer set for a winning set
+        if (checkWiner(cPlayer)) {
+            console.log("Computer won!");
+            resetGame();
+        }
         // Remove its text
         // chosenSquare.empty();
     }
     function assignHuman(row, col) {
         var chosenNumber = 0;
-        if (row === 1 || col === 1) {
+        if (row === 1 && col === 1) {
             chosenNumber = 0;
-        } else if (row === 1 || col === 2) {
+        } else if (row === 1 && col === 2) {
             chosenNumber = 1;
-        } else if (row === 1 || col === 3) {
+        } else if (row === 1 && col === 3) {
             chosenNumber = 2;
-        } else if (row === 2 || col === 1) {
+        } else if (row === 2 && col === 1) {
             chosenNumber = 3;
-        } else if (row === 2 || col === 2) {
+        } else if (row === 2 && col === 2) {
             chosenNumber = 4;
-        } else if (row === 2 || col === 3) {
+        } else if (row === 2 && col === 3) {
             chosenNumber = 5;
-        } else if (row === 3 || col === 1) {
+        } else if (row === 3 && col === 1) {
             chosenNumber = 6;
-        } else if (row === 3 || col === 2) {
+        } else if (row === 3 && col === 2) {
             chosenNumber = 7;
-        } else if (row === 3 || col === 3) {
+        } else if (row === 3 && col === 3) {
             chosenNumber = 8;
         }
         return chosenNumber;
     }
-    function assignComputer(num, cCount) {
-        cPlayer[cCount] = num;
-    }
-
+    var present = 0;
+    var winer = false;
+    // will check if is a winer
     function checkWiner(setToCheck) {
-
+        for (var item of winningSet) {
+            for (var i = 0; i < item.length; i++) {
+                if (setToCheck.includes(item[i])) {
+                    present++;
+                }
+            }
+            if (present === 3) {
+                winer = true;
+                break;
+            }
+            present = 0;
+        }
+        return winer;
     }
 
     function createBoard() {
@@ -191,7 +209,7 @@ $(document).ready(function () {
         cCount = 0;
 
         win;
-        $(".container").html("");
+        // $(".container").html("");
     }
 
 });
