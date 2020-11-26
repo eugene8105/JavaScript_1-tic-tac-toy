@@ -5,7 +5,9 @@ var hCount = 0;
 var cPlayer = [];
 var cCount = 0;
 
-var win;
+
+var present = 0;
+var winer = false;
 
 $(document).ready(function () {
     const totalRows = 3;
@@ -23,6 +25,8 @@ $(document).ready(function () {
         [2, 4, 6]
     ];
     createBoard();
+
+    $("#reset").click(resetGame);
 
     function humanPlayerTurn() {
 
@@ -43,29 +47,23 @@ $(document).ready(function () {
             // Give the square a CSS class
             chosenSquare.addClass("human-player");
             chosenSquare.html(`X`);
-
-
             // assign number to a human player aray
             hPlayer[hCount] = assignHuman(chosenRow, chosenCol);
 
             hCount++;
+            // checking if player won
             if (checkWiner(hPlayer)) {
-                console.log("You WON!");
-                resetGame();
+                var winMessage = "<h1>You WON!</h1>";
+                endOfTheGame(winMessage);
             }
             if ((hCount !== 5) && (checkWiner(hPlayer) === false)) {
                 computerPlayerTurn();
             }
         }
-
+        // checking if it's a tie
         if (hCount === 5) {
-            console.log("It's a tie!");
-            var tieMessage = "<h1>It's a tie</h1>";
-
-            $(".container").append(tieMessage);
-
-            // chosenSquare.empty();
-            resetGame();
+            var tieMessage = "<h1>It's a tie!</h1>";
+            endOfTheGame(tieMessage);
         }
     }
     function computerPlayerTurn() {
@@ -79,8 +77,7 @@ $(document).ready(function () {
 
             // select the chosen square
             chosenSquare = $(".square").eq(randomSquareNum);
-
-            // does the square have the class "computer-player" or "human-player"?
+            // checking if square is free
             if (chosenSquare.hasClass("computer-player")
                 || chosenSquare.hasClass("human-player")) {
                 squareOccupied = true;
@@ -103,12 +100,18 @@ $(document).ready(function () {
         console.log(`Assigned Computer choice - ${randomSquareNum}.`);
         // checking computer set for a winning set
         if (checkWiner(cPlayer)) {
-            console.log("Computer won!");
-            resetGame();
+            var winMessage = "<h1>Computer WON!</h1>";
+            endOfTheGame(winMessage);
         }
-        // Remove its text
-        // chosenSquare.empty();
     }
+
+    // creating a message on the screen when game is over
+    function endOfTheGame(message){
+        $("#win").html(message);
+        $("span").off();
+        console.log(message);
+    }
+    // assigning a value to the user array from selected square
     function assignHuman(row, col) {
         var chosenNumber = 0;
         if (row === 1 && col === 1) {
@@ -132,9 +135,7 @@ $(document).ready(function () {
         }
         return chosenNumber;
     }
-    var present = 0;
-    var winer = false;
-    // will check if is a winer
+    // checking if a winer
     function checkWiner(setToCheck) {
         for (var item of winningSet) {
             for (var i = 0; i < item.length; i++) {
@@ -150,7 +151,7 @@ $(document).ready(function () {
         }
         return winer;
     }
-
+    // creating a board
     function createBoard() {
         // How big can each square be?
         // Add 2 to allow for one square's worth of padding on either side
@@ -163,7 +164,6 @@ $(document).ready(function () {
         // will fit in the viewport and still be a square
         var bestDimension = Math.min(squareWidth, squareHeight);
         console.log("Squares should be: " + bestDimension);
-
 
         // store the board div in a variable
         var gameBoardDiv = $("#board");
@@ -190,25 +190,22 @@ $(document).ready(function () {
                 square.height(bestDimension);
                 // give the square the class of "square" to make it inline-block
                 square.addClass("square");
-                // display the square's row and column info
-                // square.html(`Row ${rowNum}<br>Col ${colNum}`);
                 // make the square run a function when clicked
                 square.click(humanPlayerTurn);
-
                 // add the square to the current row
                 rowOfSquares.append(square);
             }
         }
     }
-
+    // reseting a game
     function resetGame() {
         hPlayer = [0, 0, 0, 0, 0];
         hCount = 0;
 
         cPlayer = [0, 0, 0, 0, 0];
         cCount = 0;
-
-        win;
+        location.reload(true);
+        // win;
         // $(".container").html("");
     }
 
